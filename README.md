@@ -4,7 +4,7 @@ Repositorio para um desafio de desenvolvimento MLOps para uma oportunidade de em
 O desafio tem como base um problema do Kaggle:
 https://www.kaggle.com/c/new-york-city-taxi-fare-prediction/
 
-O objetivo desse projeto é, então, desenvolver uma solução estruturada para levar o(s) modelo(s) preditivos para produção.
+O objetivo desse projeto é, então, desenvolver uma solução estruturada para levar o modelo preditivos para produção.
 O projeto deve incluir:
 - Uma solução para predições instantâneas
 - Uma solução para predições em lote, grandes quantidades de predições
