@@ -1,5 +1,5 @@
+# -*- coding: utf-8 -*-
 # TODO description
-
 
 
 def classify_sample(sample) -> bool:
@@ -8,6 +8,7 @@ def classify_sample(sample) -> bool:
         classifies one sample
     """
     # TODO
+    pass
 
 
 def classify_batch(batch) -> list:
@@ -16,3 +17,4 @@ def classify_batch(batch) -> list:
         classifies one batch of samples
     """
     # TODO
+    pass

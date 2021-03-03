@@ -11,7 +11,7 @@ COPY ./requirements.txt .
 RUN python3 -m pip install -r requirements.txt
 
 COPY ./src .
-#COPY ./data ./data
+COPY ./data ./data
 
 EXPOSE 9200
 
