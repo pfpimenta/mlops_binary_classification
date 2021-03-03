@@ -97,9 +97,21 @@ def generate_dataset():
     # print(pos_train_X.head())
     # print(pos_train_X.shape)
 
-    train_samples = pd.concat([pos_train, neg_train])
+    # gather positive and negative samples
     test_samples = pd.concat([pos_test, neg_test])
-    return train_samples, test_samples
+    train_samples = pd.concat([pos_train, neg_train])
+
+    # separate on X and Y
+    train_X = train_samples.drop(columns=["Class"])
+    train_Y = train_samples["Class"]
+    test_X = test_samples.drop(columns=["Class"])
+    test_Y = test_samples["Class"]
+
+    # apply SMOTE on training samples
+    # (solve class imbalance by creating new samples base on interpolations)
+    train_X, train_Y = SMOTE().fit_resample(train_X, train_Y)
+
+    return train_X, train_Y, test_X, test_Y
 
     # TODO samplear do neg esse mesmo numero (undersample)
 
