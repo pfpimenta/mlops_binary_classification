@@ -3,27 +3,57 @@
 
 import numpy as np
 import pandas as pd
+from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import train_test_split
 
 
-# TODO
 def get_training_data():
+    """ TODO doc
+    """
+    # TODO
     pass
 
 
-# TODO
 def get_test_data():
+    """ TODO doc
+    """
+    # TODO
     pass
 
 
 def normalize_col(col):
     """ normalizes a pandas dataframe column values between 0 and 1 """
-    normalized_col = (col - col.min()) / (col.max() - col.min()).astype(np.float64)
+    normalized_col = ((col - col.min()) / (col.max() - col.min())).astype(np.float64)
     return normalized_col
 
 
+def continuous_multivar_stratified_split(df, test_size=0.3):
+    """ TODO doc
+    """
+    cols = ["V1", "V2", "V3", "V4", "V5"]
+    for col in cols:
+        col_name = col + "_strat"
+        # print("DEBUG " + col_name)
+        print(df[col].head())
+        print(df[col].shape)
+        normalized_col = normalize_col(df[col])
+        print(normalized_col.head())
+        print(normalized_col.shape)
+        df[col_name] = pd.qcut(normalized_col, q=2, labels=["A", "B"])
+        # print(df[col_name].value_counts())
+    stratify_cols = [col + "_strat" for col in cols]
+    df_train, df_test = train_test_split(
+        df, test_size=test_size, random_state=5, stratify=df[stratify_cols]
+    )
+    # drop these columns that were created only to split the data in train / test
+    df_train = df_train.drop(columns=stratify_cols)
+    df_test = df_test.drop(columns=stratify_cols)
+
+    return df_train, df_test
+
+
 def generate_dataset():
-    # TODO
+
     # load raw csv
     raw_data = pd.read_csv("./data/creditcard.csv")
 
@@ -37,35 +67,41 @@ def generate_dataset():
     # negative_rows['Time'] = normalize_col(negative_rows['Time'])
     # negative_rows['Amount'] = normalize_col(negative_rows['Amount'])
 
-    # continuous multivariable stratified sampling
-    # cols = ['Time', 'V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10',
-    #     'V11', 'V12', 'V13', 'V14', 'V15', 'V16', 'V17', 'V18', 'V19', 'V20',
-    #    'V21', 'V22', 'V23', 'V24', 'V25', 'V26', 'V27', 'V28', 'Amount']
-    cols = ["V1", "V2", "V3", "V4", "V5"]
-    for col in cols:
-        col_name = col + "_strat"
-        print("DEBUG " + col_name)
-        positive_rows[col_name] = pd.qcut(
-            normalize_col(positive_rows[col]), q=2, labels=["A", "B"]
-        )
-        print(positive_rows[col_name].value_counts())
-    stratify_cols = [col + "_strat" for col in cols]
-    pos_train, pos_test = train_test_split(
-        positive_rows,
-        test_size=0.3,
-        random_state=5,
-        stratify=positive_rows[stratify_cols],
+    # train/test split
+    pos_train, pos_test = continuous_multivar_stratified_split(positive_rows)
+
+    num_pos_train_samples = pos_train.shape[0]
+    num_pos_test_samples = pos_test.shape[0]
+    num_neg_train_samples = num_pos_train_samples * 2
+    num_neg_test_samples = num_pos_test_samples
+    num_neg_samples = num_neg_train_samples + num_pos_test_samples
+    print(
+        f"DEBUG {num_pos_train_samples}, {num_pos_test_samples}, {num_neg_train_samples}, {num_neg_samples}"
     )
 
-    # drop these columns that were created only to split the data in train / test
-    pos_train = pos_train.drop(columns=stratify_cols)
-    pos_test = pos_test.drop(columns=stratify_cols)
+    # TODO mudar? talvez usar algum sampling nao aleatorio
+    neg_samples = negative_rows.sample(n=num_neg_samples, random_state=1)
+    neg_train, neg_test = continuous_multivar_stratified_split(
+        neg_samples, test_size=num_pos_test_samples
+    )
 
-    print(pos_train.head())
-    print(pos_train.shape)
+    # DEBUG
+    # print(pos_train.head())
+    # print(pos_train.shape)
+
+    # apply SMOTE on training positive samples
+    # pos_train_X = pos_train.drop(columns=['Class'])
+    # pos_train_X, pos_train_y = SMOTE().fit_resample(pos_train_X, pos_train['Class'])
+
+    # DEBUG
+    # print(pos_train_X.head())
+    # print(pos_train_X.shape)
+
+    train_samples = pd.concat([pos_train, neg_train])
+    test_samples = pd.concat([pos_test, neg_test])
+    return train_samples, test_samples
 
     # TODO samplear do neg esse mesmo numero (undersample)
-    num_pos_train = pos_train.shape[0]
 
     # linhas 1:
     #     70% vai pro csv de treino = 344
