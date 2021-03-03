@@ -6,6 +6,8 @@ import logging
 from flask import Flask
 
 from healthcheck import check_health
+from train import train_model
+from classify import classify_sample, classify_batch
 
 app = Flask(__name__)
 
@@ -14,19 +16,25 @@ app = Flask(__name__)
 @app.route("/healthcheck", methods=["GET"])
 def endpoint_healthcheck():
     health = check_health()
-    logging.info("Current system health: %s", health)
+    logging("Current system health: " + str(health))
     return health, 200
 
 
 # endpoint to train the model
 # TODO
+@app.route("/classify_sample", methods=["GET"])
+def endpoint_train():
+    logging.debug("Training the model...")
+    train_model()
+    return "Model has successfully trained", 200
 
 # endpoint to classify a single sample
 # TODO
 @app.route("/classify_sample", methods=["GET"])
 def endpoint_classify_sample(sample):
-    logging.debug("Classifying sample: %s")
-    pass
+    logging.debug("Classifying sample: %s", str(sample))
+    # TODO : validate sample data
+    return "The given ", 200
 
 
 # endpoint to classify a batch of samples
