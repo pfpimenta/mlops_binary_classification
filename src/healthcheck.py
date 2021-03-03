@@ -7,8 +7,6 @@ import os
 import psutil
 from flask import jsonify
 
-logger = logging.getLogger("healthcheck")
-
 
 def check_health():
     healthcheck = HealthCheck()
