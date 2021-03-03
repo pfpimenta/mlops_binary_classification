@@ -5,11 +5,15 @@ distlib==0.3.1
 filelock==3.0.12
 Flask==1.1.2
 identify==2.0.0
+imbalanced-learn==0.8.0
 importlib-metadata==3.7.0
 itsdangerous==1.1.0
 Jinja2==2.11.3
 MarkupSafe==1.1.1
+matplotlib==3.3.4
 nodeenv==1.5.0
+numpy==1.20.1
+pandas==1.2.3
 pre-commit==2.10.1
 psutil==5.8.0
 PyYAML==5.4.1
