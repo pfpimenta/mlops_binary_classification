@@ -60,8 +60,6 @@ class HealthCheck:
     def is_ok(self):
         return all(
             [
-                # Database is connected
-                self.db["connected"],
                 # CPU usage is under 90%
                 self.cpu["average_cpu_usage"] < 90.0,
                 # We have at least 256MB of RAM available
@@ -73,8 +71,9 @@ class HealthCheck:
 
     def get_details(self):
         return {
-            "db": self.db,
-            "system": {"cpu": self.cpu, "memory": self.memory, "disk": self.disk},
+            "cpu": self.cpu,
+            "memory": self.memory,
+            "disk": self.disk
         }
 
     @staticmethod
