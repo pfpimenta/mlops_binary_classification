@@ -6,6 +6,19 @@ import pandas as pd
 from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import train_test_split
 
+from data_validation import validate_raw_data
+
+RAW_DATA_FILEPATH = "./data/creditcard.csv"
+TRAIN_DATA_FILEPATH = "./data/train.csv"  # TODO
+TEST_DATA_FILEPATH = "./data/test.csv"  # TODO
+
+
+def get_one_sample():
+    test_X, test_Y = get_test_data()
+    sample = test_X.head(1)
+    sample_class = test_Y.head(1).values[0]
+    return sample, sample_class
+
 
 def get_training_data():
     train_X, train_Y, _, _ = generate_dataset()
@@ -67,7 +80,12 @@ def generate_dataset():
             - 688 negative samples
     """
     # load raw csv
-    raw_data = pd.read_csv("./data/creditcard.csv")
+    raw_data = pd.read_csv(RAW_DATA_FILEPATH)
+
+    # checks if data is valid
+    is_data_valid = validate_raw_data(raw_data)
+    if is_data_valid == False:
+        raise Exception("Loaded raw data is not valid")
 
     # separate positive and negative class rows
     positive_rows = raw_data.loc[raw_data["Class"] == 1].copy()
