@@ -18,9 +18,6 @@ app.config["LOG_LEVEL"] = os.environ.get("LOG_LEVEL", "DEBUG")
 logs = LogSetup()
 logs.init_app(app)
 
-# TODO : temporary solution. change this.
-model = None
-
 # hello world checkpoint (to test if API is up)
 @app.route("/")
 def hello_world():
@@ -40,7 +37,6 @@ def endpoint_healthcheck():
 # TODO
 @app.route("/train", methods=["GET"])
 def endpoint_train():
-    global model
     app.logger.info("Training the model...")
     score = train()
     return (

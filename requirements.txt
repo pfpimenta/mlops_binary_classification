@@ -9,6 +9,7 @@ imbalanced-learn==0.8.0
 importlib-metadata==3.7.0
 itsdangerous==1.1.0
 Jinja2==2.11.3
+kaggle==1.5.10
 MarkupSafe==1.1.1
 matplotlib==3.3.4
 nodeenv==1.5.0
