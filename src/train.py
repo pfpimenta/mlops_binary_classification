@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
+# functions for training, saving and loading the model
 
 import os
 
 from joblib import dump, load
 from sklearn.ensemble import RandomForestClassifier
 
+from const import MODEL_FOLDERPATH
 from data_loader import get_training_data
 from model_validation import validate_model
-
-MODEL_FOLDERPATH = "./model/"
 
 
 def train_model():
@@ -29,7 +29,6 @@ def train():
         return score
 
 
-# TODO move this somewhere else
 def save_model(model):
     model_name = "seila"  # TODO change this
     model_filepath = MODEL_FOLDERPATH + model_name + ".joblib"
@@ -38,7 +37,6 @@ def save_model(model):
     dump(model, model_filepath)
 
 
-# TODO move this somewhere else
 def load_model(model_name=None):
     if model_name is None:
         model_name = "seila"  # TODO change this

@@ -6,11 +6,8 @@ import pandas as pd
 from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import train_test_split
 
+from const import RAW_DATA_FILEPATH, TEST_DATA_FILEPATH, TRAIN_DATA_FILEPATH
 from data_validation import validate_raw_data
-
-RAW_DATA_FILEPATH = "./data/creditcard.csv"
-TRAIN_DATA_FILEPATH = "./data/train.csv"  # TODO
-TEST_DATA_FILEPATH = "./data/test.csv"  # TODO
 
 
 def get_one_sample():
