@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# TODO description
+# functions for checking the health/status of the container
 
 import logging
 import os
 
 import psutil
-from flask import jsonify
 
 
 def check_health():
     healthcheck = HealthCheck()
-    return jsonify(ok=healthcheck.is_ok(), _details=healthcheck.get_details())
+    is_ok = healthcheck.is_ok()
+    details = healthcheck.get_details()
+    return is_ok, details
 
 
 def get_readable_CPU_usage():
@@ -68,11 +69,7 @@ class HealthCheck:
         )
 
     def get_details(self):
-        return {
-            "cpu": self.cpu,
-            "memory": self.memory,
-            "disk": self.disk
-        }
+        return {"cpu": self.cpu, "memory": self.memory, "disk": self.disk}
 
     @staticmethod
     def __get_cpu_info():
