@@ -6,12 +6,11 @@ RUN apt-get install -y software-properties-common
 RUN apt-get update --fix-missing
 RUN apt-get -y install python3-pip unzip --fix-missing
 
+# install dependencies
 COPY ./requirements.txt .
-
 RUN python3 -m pip install -r requirements.txt
 
 COPY ./src .
-#COPY ./data ./data
 
 # get data from kaggle
 ENV KAGGLE_USERNAME=pfpimenta
