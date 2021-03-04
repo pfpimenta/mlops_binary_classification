@@ -8,22 +8,17 @@ from sklearn.model_selection import train_test_split
 
 
 def get_training_data():
-    """ TODO doc
-    """
-    # TODO
-    pass
+    train_X, train_Y, _, _ = generate_dataset()
+    return train_X, train_Y
 
 
 def get_test_data():
-    """
-        TODO doc
-    """
-    # TODO
-    pass
+    _, _, test_X, test_Y = generate_dataset()
+    return test_X, test_Y
 
 
 def normalize_col(col):
-    """ normalizes a pandas dataframe column values between 0 and 1 """
+    """ normalizes a pandas dataframe's column values between 0 and 1 """
     normalized_col = ((col - col.min()) / (col.max() - col.min())).astype(np.float64)
     return normalized_col
 
