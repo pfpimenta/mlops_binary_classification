@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import os
+
+from joblib import dump, load
 from sklearn.ensemble import RandomForestClassifier
 
-from data_loader import get_test_data, get_training_data
+from data_loader import get_training_data
+from model_validation import validate_model
+
+MODEL_FOLDERPATH = "./model/"
 
 
 def train_model():
@@ -12,13 +18,30 @@ def train_model():
     return model
 
 
-def evaluate_model(model) -> float:
-    test_X, test_Y = get_testdata()
-    score = model.score(test_X, test_Y)
-    return score
-
-
+# function called by the /train endpoint
 def train():
     model = train_model()
-    score = evaluate_model(model)
-    return model, score
+    is_model_valid, score = validate_model(model)
+    if is_model_valid is False:
+        raise Exception("Invalid model.")
+    else:
+        save_model(model)
+        return score
+
+
+# TODO move this somewhere else
+def save_model(model):
+    model_name = "seila"  # TODO change this
+    model_filepath = MODEL_FOLDERPATH + model_name + ".joblib"
+    if not os.path.exists(MODEL_FOLDERPATH):
+        os.makedirs(MODEL_FOLDERPATH)
+    dump(model, model_filepath)
+
+
+# TODO move this somewhere else
+def load_model(model_name=None):
+    if model_name is None:
+        model_name = "seila"  # TODO change this
+    model_filepath = MODEL_FOLDERPATH + model_name + ".joblib"
+    model = load(model_filepath)
+    return model
