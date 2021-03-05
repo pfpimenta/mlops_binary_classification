@@ -37,8 +37,8 @@ def test_train():
         assert value >= 0 and value <= 1
 
 
-def test_classify_test_sample():
-    endpoint = "classify_test_sample"
+def test_classify_random_sample():
+    endpoint = "classify_random_sample"
     r = requests.get(url=URL + endpoint)
     response_data = r.json()
     assert list(response_data.keys()) == ["expected_class", "predicted_class"]
