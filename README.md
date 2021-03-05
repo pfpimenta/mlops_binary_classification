@@ -23,7 +23,18 @@ O projeto deve incluir:
 `curl -X GET http://0.0.0.0:9200/train`
 
 - Call classify_sample endpoint:
+`curl -X GET http://0.0.0.0:9200/classify_test_sample`
+
+- Call classify_sample endpoint:
 `curl -X GET http://0.0.0.0:9200/classify_sample`
 
 - Call classify_batch endpoint:
 `curl -X GET http://0.0.0.0:9200/classify_batch`
+
+## TODOs
+- Implement other metrics: precision, recall, F1
+- Improve test data: put more negative samples. It does not matter if it is not balanced.
+- Model persistance: saving the model with a different name each time.
+- Save train.csv and test.csv locally instead of generating test and train datasets again each time.
+- Improve model validation.
+- Improve data validation.
