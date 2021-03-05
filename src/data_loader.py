@@ -102,7 +102,7 @@ def generate_dataset():
     num_pos_test_samples = pos_test.shape[0]
     num_neg_train_samples = num_pos_train_samples * 2
     num_neg_test_samples = num_pos_test_samples
-    num_neg_samples = num_neg_train_samples + num_pos_test_samples
+    num_neg_samples = num_neg_train_samples + num_neg_test_samples
 
     # undersample negative samples
     neg_samples = negative_rows.sample(n=num_neg_samples, random_state=0)
@@ -125,3 +125,20 @@ def generate_dataset():
     train_X, train_Y = SMOTE(random_state=0).fit_resample(train_X, train_Y)
 
     return train_X, train_Y, test_X, test_Y
+
+
+def generate_test_and_train_sets():
+    """
+        generates train and test sets from the raw data csv
+        and saves them in separate csv files
+    """
+    # get train and test data
+    train_X, train_Y, test_X, test_Y = generate_dataset()
+    train = train_X
+    train["Class"] = train_Y
+    test = test_X
+    test["Class"] = test_Y
+
+    # save to csv
+    train.to_csv(TRAIN_DATA_FILEPATH, index=False)
+    test.to_csv(TEST_DATA_FILEPATH, index=False)

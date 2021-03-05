@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 # functions for training, saving and loading the model
 
+import glob
 import os
+from datetime import datetime
 
 from joblib import dump, load
 from sklearn.ensemble import RandomForestClassifier
@@ -30,16 +32,34 @@ def train():
 
 
 def save_model(model):
-    model_name = "seila"  # TODO change this
+    date_string = f"{datetime.now():%Y-%m-%d_%H:%M:%S%z}"
+    model_name = "model_" + date_string
     model_filepath = MODEL_FOLDERPATH + model_name + ".joblib"
     if not os.path.exists(MODEL_FOLDERPATH):
         os.makedirs(MODEL_FOLDERPATH)
     dump(model, model_filepath)
 
 
+def find_latest_model_filepath() -> str:
+    """
+        returns filepath of the most recent model saved
+    """
+    search_filepath = MODEL_FOLDERPATH + "model_*.joblib"
+    filepaths = glob.glob(search_filepath)
+    if not filepaths:  # no saved model found
+        raise Exception("Model not found")
+    model_filepath = sorted(filepaths)[-1]  # get most recent model
+    return model_filepath
+
+
 def load_model(model_name=None):
+    """
+        loads and returns the model with model_name
+        if model_name is not given, returns the most recent model saved
+    """
     if model_name is None:
-        model_name = "seila"  # TODO change this
-    model_filepath = MODEL_FOLDERPATH + model_name + ".joblib"
+        model_filepath = find_latest_model_filepath()
+    else:
+        model_filepath = MODEL_FOLDERPATH + model_name + ".joblib"
     model = load(model_filepath)
     return model

@@ -3,6 +3,7 @@
 
 from data_loader import get_one_sample
 from data_validation import validate_sample
+from model_validation import validate_model
 from train import load_model
 
 
@@ -10,8 +11,11 @@ def classify_sample(sample) -> bool:
     """ classifies one sample """
     is_sample_valid = validate_sample(sample)
     if is_sample_valid is False:
-        raise Exception("Invalid sample.")
+        raise Exception("Invalid sample")
     model = load_model()
+    is_model_valid = validate_model(model)
+    if is_model_valid is False:
+        raise Exception("Invalid model")
     predicted_class = int(model.predict(sample)[0])
     return predicted_class
 
