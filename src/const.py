@@ -7,8 +7,8 @@ import numpy as np
 # filepaths and folder paths:
 MODEL_FOLDERPATH = "./model/"
 RAW_DATA_FILEPATH = "./data/creditcard.csv"
-TRAIN_DATA_FILEPATH = "./data/train.csv"  # TODO
-TEST_DATA_FILEPATH = "./data/test.csv"  # TODO
+TRAIN_DATA_FILEPATH = "./data/train.csv"
+TEST_DATA_FILEPATH = "./data/test.csv"
 
 ###################
 # for data validation:
