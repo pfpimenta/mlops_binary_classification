@@ -65,8 +65,9 @@ def endpoint_classify_sample():
     app.logger.info("Classifying sample: %s", sample_json)
     sample = pd.DataFrame(loads(sample_json))
     predicted_class = classify_sample(sample)
-    app.logger.info("Result: %s", str(predicted_class))
-    return jsonify(predicted_class=str(predicted_class)), 200
+    message = f"Result: {str(predicted_class)}"
+    app.logger.info(message)
+    return jsonify(message=message, predicted_class=predicted_class), 200
 
 
 # endpoint to classify a batch of samples
@@ -77,8 +78,12 @@ def endpoint_classify_batch():
     num_samples = len(batch)
     app.logger.info("Classifying batch with %s samples", num_samples)
     predicted_batch_classes = classify_batch(batch)
-    app.logger.info("Result: %s", str(predicted_batch_classes))
-    return jsonify(predicted_batch_classes=str(predicted_batch_classes)), 200
+    message = f"Result: {str(predicted_batch_classes)}"
+    app.logger.info(message)
+    return (
+        jsonify(message=message, predicted_batch_classes=predicted_batch_classes),
+        200,
+    )
 
 
 if __name__ == "__main__":

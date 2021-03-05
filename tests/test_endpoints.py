@@ -46,7 +46,7 @@ def test_classify_test_sample():
 def get_random_sample():
     sample_data = {}
     for feature in SAMPLE_FEATURES:
-        sample_data[feature] = [random()]
+        sample_data[feature] = [random() * 10 - 5]
     return sample_data
 
 
@@ -55,8 +55,10 @@ def test_classify_sample():
     parameters = {"sample": dumps(sample)}
     r = requests.get(url=URL + "classify_sample", params=parameters)
     response_data = r.json()
-    print(response_data)
-    # TODO assert
+    assert list(response_data.keys()) == ["message", "predicted_class"]
+    predicted_class = response_data["predicted_class"]
+    assert isinstance(predicted_class, int)
+    assert predicted_class in [0, 1]
 
 
 def get_random_batch(batch_size):
@@ -70,5 +72,10 @@ def test_classify_batch():
     parameters = {"batch": dumps(batch)}
     r = requests.get(url=URL + "classify_batch", params=parameters)
     response_data = r.json()
-    print(response_data)
-    # TODO assert
+    assert list(response_data.keys()) == ["message", "predicted_batch_classes"]
+    predicted_batch_classes = response_data["predicted_batch_classes"]
+    assert isinstance(predicted_batch_classes, list)
+    assert len(predicted_batch_classes) == batch_size
+    for predicted_sample_class in predicted_batch_classes:
+        assert isinstance(predicted_sample_class, int)
+        assert predicted_sample_class in [0, 1]
