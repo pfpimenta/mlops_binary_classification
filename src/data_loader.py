@@ -13,7 +13,7 @@ from data_validation import validate_raw_data
 def get_one_sample():
     test_X, test_Y = get_test_data()
     sample = test_X.head(1)
-    sample_class = test_Y.head(1).values[0]
+    sample_class = int(test_Y.head(1).values[0])
     return sample, sample_class
 
 

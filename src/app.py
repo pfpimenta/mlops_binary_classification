@@ -53,9 +53,7 @@ def endpoint_classify_test_sample():
     app.logger.info("Predicted class: %s", str(predicted_class))
     app.logger.info("Expected class: %s", str(expected_class))
     return (
-        jsonify(
-            predicted_class=str(predicted_class), expected_class=str(expected_class)
-        ),
+        jsonify(predicted_class=predicted_class, expected_class=expected_class),
         200,
     )
 
@@ -64,8 +62,8 @@ def endpoint_classify_test_sample():
 @app.route("/classify_sample/", methods=["GET"])
 def endpoint_classify_sample():
     sample_json = request.args.get("sample")
-    app.logger.info("Classifying sample: %s", str(sample))
-    sample = pd.DataFrame(loads(sample))
+    app.logger.info("Classifying sample: %s", sample_json)
+    sample = pd.DataFrame(loads(sample_json))
     predicted_class = classify_sample(sample)
     app.logger.info("Result: %s", str(predicted_class))
     return jsonify(predicted_class=str(predicted_class)), 200

@@ -34,8 +34,13 @@ def test_train():
 def test_classify_test_sample():
     r = requests.get(url=URL + "classify_test_sample")
     response_data = r.json()
-    print(response_data)
-    # TODO assert
+    assert list(response_data.keys()) == ["expected_class", "predicted_class"]
+    expected_class = response_data["expected_class"]
+    predicted_class = response_data["predicted_class"]
+    assert isinstance(expected_class, int)
+    assert isinstance(predicted_class, int)
+    assert expected_class in [0, 1]
+    assert predicted_class in [0, 1]
 
 
 def get_random_sample():
