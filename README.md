@@ -23,7 +23,7 @@ O projeto deve incluir:
 `curl -X GET http://0.0.0.0:9200/train`
 
 - Call classify_sample endpoint:
-`curl -X GET http://0.0.0.0:9200/classify_test_sample`
+`curl -X GET http://0.0.0.0:9200/classify_random_sample`
 
 - Call classify_sample endpoint:
 `curl -X GET http://0.0.0.0:9200/classify_sample`
@@ -32,9 +32,21 @@ O projeto deve incluir:
 `curl -X GET http://0.0.0.0:9200/classify_batch`
 
 ## TODOs
-- Implement other metrics: precision, recall, F1
-- Improve test data: put more negative samples. It does not matter if it is not balanced.
-- Model persistance: saving the model with a different name each time.
-- Save train.csv and test.csv locally instead of generating test and train datasets again each time.
+- Some kind of feature generation/engineering.
+- Save metadata (metrics, training time, data used, etc) when a model is trained and saved.
 - Improve model validation.
 - Improve data validation.
+
+## Features
+TODO ! escrever mais aqui
+- API with 6 endpoints
+    - /: hello world checkpoint (may be useful to test if API is up).
+    - /healthcheck: returns current system health information.
+    - /train: trains a binary classifier model and saves its state in the API for future use.
+    - /classify_random_sample: creates a sample with random features, classifies it using the most recent trained model, and then returns the result.
+    - /classify_sample: classifies the sample given as a query argument using the most recent trained model.
+    - /classify_batch: classifies the samples in the batch given as a query argument using the most recent trained model.
+- Pre-commit: verification to ensure code style consistency + some other verifications
+- Dependecies management: one requirements.txt file containing the dependencies of the API and another containing the dependencies of the test functions.
+- Basic model validation: for now, only checks if metrics are above an acceptable level.
+- Basic data validation: for now, only checks if data has the expected features and if each feature has the expected type.
