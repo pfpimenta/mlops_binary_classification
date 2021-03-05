@@ -22,7 +22,7 @@ O projeto deve incluir:
 - Call train endpoint:
 `curl -X GET http://0.0.0.0:9200/train`
 
-- Call classify_sample endpoint:
+- Call classify_random_sample endpoint:
 `curl -X GET http://0.0.0.0:9200/classify_random_sample`
 
 - Call classify_sample endpoint:
@@ -30,6 +30,8 @@ O projeto deve incluir:
 
 - Call classify_batch endpoint:
 `curl -X GET http://0.0.0.0:9200/classify_batch?batch=<batch>`
+
+For endpoints classify_sample and classify_batch enpoints, you need to send the sample or batch in a JSON format as a query string parameter.
 
 ## TODOs
 - Some kind of feature generation/engineering.
