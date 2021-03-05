@@ -26,10 +26,10 @@ O projeto deve incluir:
 `curl -X GET http://0.0.0.0:9200/classify_random_sample`
 
 - Call classify_sample endpoint:
-`curl -X GET http://0.0.0.0:9200/classify_sample`
+`curl -X GET http://0.0.0.0:9200/classify_sample?sample=<sample>`
 
 - Call classify_batch endpoint:
-`curl -X GET http://0.0.0.0:9200/classify_batch`
+`curl -X GET http://0.0.0.0:9200/classify_batch?batch=<batch>`
 
 ## TODOs
 - Some kind of feature generation/engineering.
@@ -37,7 +37,7 @@ O projeto deve incluir:
 - Improve model validation.
 - Improve data validation.
 
-## Features
+## Main project features
 TODO ! escrever mais aqui
 - API with 6 endpoints
     - /: hello world checkpoint (may be useful to test if API is up).
