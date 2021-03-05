@@ -40,7 +40,6 @@ O projeto deve incluir:
 - Unit and integration tests.
 
 ## Main project features
-TODO ! escrever mais aqui
 - API with 6 endpoints
     - /: hello world checkpoint (may be useful to test if API is up).
     - /healthcheck: returns current system health information.
