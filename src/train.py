@@ -14,6 +14,9 @@ from model_validation import validate_model
 
 
 def train_model():
+    """
+        trains a model on the train data, and then returns it
+    """
     train_X, train_Y = get_training_data()
     model = RandomForestClassifier(random_state=0)
     model.fit(train_X, train_Y)
@@ -22,19 +25,28 @@ def train_model():
 
 # function called by the /train endpoint
 def train():
+    """
+        trains a model on the train data, validates it,
+        and then returns the evaluation metrics made with the test data
+    """
     model = train_model()
-    is_model_valid, score = validate_model(model)
+    is_model_valid, metrics = validate_model(model)
     if is_model_valid is False:
         raise Exception("Invalid model.")
     else:
         save_model(model)
-        return score
+        return metrics
+
+
+def get_model_filepath(model_name: str) -> str:
+    model_filepath = MODEL_FOLDERPATH + model_name + ".joblib"
+    return model_filepath
 
 
 def save_model(model):
     date_string = f"{datetime.now():%Y-%m-%d_%H:%M:%S%z}"
     model_name = "model_" + date_string
-    model_filepath = MODEL_FOLDERPATH + model_name + ".joblib"
+    model_filepath = get_model_filepath(model_name)
     if not os.path.exists(MODEL_FOLDERPATH):
         os.makedirs(MODEL_FOLDERPATH)
     dump(model, model_filepath)
@@ -60,6 +72,6 @@ def load_model(model_name=None):
     if model_name is None:
         model_filepath = find_latest_model_filepath()
     else:
-        model_filepath = MODEL_FOLDERPATH + model_name + ".joblib"
+        model_filepath = get_model_filepath(model_name)
     model = load(model_filepath)
     return model

@@ -13,7 +13,7 @@ def classify_sample(sample) -> bool:
     if is_sample_valid is False:
         raise Exception("Invalid sample")
     model = load_model()
-    is_model_valid = validate_model(model)
+    is_model_valid, _ = validate_model(model)
     if is_model_valid is False:
         raise Exception("Invalid model")
     predicted_class = int(model.predict(sample)[0])

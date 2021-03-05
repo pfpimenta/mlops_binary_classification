@@ -40,10 +40,13 @@ def endpoint_healthcheck():
 @app.route("/train", methods=["GET"])
 def endpoint_train():
     app.logger.info("Training the model...")
-    score = train()
-    message = f"Model has been trained successfully. Score on the test data: {score}"
+    metrics = train()
+    roc_auc_score = metrics["roc_auc"]
+    message = (
+        f"Model has been trained successfully. Score on the test data: {roc_auc_score}"
+    )
     app.logger.info(message)
-    return jsonify(message=message, score=(score)), 200
+    return jsonify(message=message, metrics=metrics), 200
 
 
 # endpoint to classify a test sample (for debug purposes)

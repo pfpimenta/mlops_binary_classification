@@ -18,21 +18,28 @@ URL = "http://0.0.0.0:9200/"
 
 
 def test_healthcheck():
-    r = requests.get(url=URL + "healthcheck")
+    endpoint = "healthcheck"
+    r = requests.get(url=URL + endpoint)
     response_data = r.json()
     assert response_data["ok"]
 
 
 def test_train():
-    r = requests.get(url=URL + "train")
+    endpoint = "train"
+    r = requests.get(url=URL + endpoint)
     response_data = r.json()
-    score = response_data["score"]
-    is_float = isinstance(score, float)
-    assert is_float
+    assert list(response_data.keys()) == ["message", "metrics"]
+    metrics = response_data["metrics"]
+    is_dict = isinstance(metrics, dict)
+    assert is_dict
+    for _, value in metrics.items():
+        assert isinstance(value, float)
+        assert value >= 0 and value <= 1
 
 
 def test_classify_test_sample():
-    r = requests.get(url=URL + "classify_test_sample")
+    endpoint = "classify_test_sample"
+    r = requests.get(url=URL + endpoint)
     response_data = r.json()
     assert list(response_data.keys()) == ["expected_class", "predicted_class"]
     expected_class = response_data["expected_class"]
@@ -53,7 +60,8 @@ def get_random_sample():
 def test_classify_sample():
     sample = get_random_sample()
     parameters = {"sample": dumps(sample)}
-    r = requests.get(url=URL + "classify_sample", params=parameters)
+    endpoint = "classify_sample"
+    r = requests.get(url=URL + endpoint, params=parameters)
     response_data = r.json()
     assert list(response_data.keys()) == ["message", "predicted_class"]
     predicted_class = response_data["predicted_class"]
@@ -70,7 +78,8 @@ def test_classify_batch():
     batch_size = 10
     batch = get_random_batch(batch_size)
     parameters = {"batch": dumps(batch)}
-    r = requests.get(url=URL + "classify_batch", params=parameters)
+    endpoint = "classify_batch"
+    r = requests.get(url=URL + endpoint, params=parameters)
     response_data = r.json()
     assert list(response_data.keys()) == ["message", "predicted_batch_classes"]
     predicted_batch_classes = response_data["predicted_batch_classes"]

@@ -67,6 +67,9 @@ def generate_dataset():
         For this, it uses undersampling and oversampling in order to balance
         the positive and negative sample quantities.
 
+            original dataset:
+            - 492 positive samples
+            - 284315 negative samples
             test set:
             - 148 positive samples
             - 148 negative samples
@@ -101,7 +104,9 @@ def generate_dataset():
     num_pos_train_samples = pos_train.shape[0]
     num_pos_test_samples = pos_test.shape[0]
     num_neg_train_samples = num_pos_train_samples * 2
-    num_neg_test_samples = num_pos_test_samples
+    num_neg_test_samples = (
+        num_pos_test_samples
+    )  # TODO: *500 to make test set unbalanced
     num_neg_samples = num_neg_train_samples + num_neg_test_samples
 
     # undersample negative samples
