@@ -2,8 +2,10 @@
 # This script contains the endpoints for the WebAPI
 
 import os
+from json import loads
 
-from flask import Flask, jsonify
+import pandas as pd
+from flask import Flask, jsonify, request
 
 from classify import classify_batch, classify_sample, classify_test_sample
 from flask_logs import LogSetup
@@ -39,10 +41,9 @@ def endpoint_healthcheck():
 def endpoint_train():
     app.logger.info("Training the model...")
     score = train()
-    return (
-        f"Model has been trained successfully. Score on the test data: {score}\n",
-        200,
-    )
+    message = f"Model has been trained successfully. Score on the test data: {score}"
+    app.logger.info(message)
+    return jsonify(message=message, score=(score)), 200
 
 
 # endpoint to classify a test sample (for debug purposes)
@@ -60,19 +61,21 @@ def endpoint_classify_test_sample():
 
 
 # endpoint to classify a single sample
-# TODO : create samples to send to this endpoint (and use in tests)
-@app.route("/classify_sample", methods=["GET"])
-def endpoint_classify_sample(sample):
+@app.route("/classify_sample/", methods=["GET"])
+def endpoint_classify_sample():
+    sample_json = request.args.get("sample")
     app.logger.info("Classifying sample: %s", str(sample))
+    sample = pd.DataFrame(loads(sample))
     predicted_class = classify_sample(sample)
     app.logger.info("Result: %s", str(predicted_class))
     return jsonify(predicted_class=str(predicted_class)), 200
 
 
 # endpoint to classify a batch of samples
-# TODO : create batches to send to this endpoint (and use in tests)
 @app.route("/classify_batch", methods=["GET"])
-def endpoint_classify_batch(batch: list) -> list:
+def endpoint_classify_batch():
+    batch_json = request.args.get("batch")
+    batch = [pd.DataFrame(sample) for sample in loads(batch_json)]
     num_samples = len(batch)
     app.logger.info("Classifying batch with %s samples", num_samples)
     predicted_batch_classes = classify_batch(batch)

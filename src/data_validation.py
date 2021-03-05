@@ -42,3 +42,16 @@ def validate_sample(sample) -> bool:
     are_column_types_valid = list(sample.dtypes) == X_DATA_DTYPES
     is_sample_valid = is_dataframe and are_columns_valid and are_column_types_valid
     return is_sample_valid
+
+
+def validate_batch(batch) -> bool:
+    """
+        returns True if all samples in the given batch are valid
+        and False otherwise
+    """
+    valid_samples = [validate_sample(sample) for sample in batch]
+    if valid_samples.all() is True:
+        return True
+    else:
+        # TODO log(f"Only {sum(valid_samples)} out of {batch_size} samples are valid")
+        return False
