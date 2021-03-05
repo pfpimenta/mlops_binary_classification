@@ -51,7 +51,7 @@ def continuous_multivar_stratified_split(df, test_size=0.3):
     # use discrete version of mutivariable stratified split
     stratify_cols = [col + "_strat" for col in cols]
     df_train, df_test = train_test_split(
-        df, test_size=test_size, random_state=5, stratify=df[stratify_cols]
+        df, test_size=test_size, random_state=0, stratify=df[stratify_cols]
     )
 
     # drop these columns that were created only to split the data in train / test
@@ -105,7 +105,7 @@ def generate_dataset():
     num_neg_samples = num_neg_train_samples + num_pos_test_samples
 
     # undersample negative samples
-    neg_samples = negative_rows.sample(n=num_neg_samples, random_state=1)
+    neg_samples = negative_rows.sample(n=num_neg_samples, random_state=0)
     neg_train, neg_test = continuous_multivar_stratified_split(
         neg_samples, test_size=num_pos_test_samples
     )
@@ -122,6 +122,6 @@ def generate_dataset():
 
     # apply SMOTE on training samples
     # (solve class imbalance by creating new samples base on interpolations)
-    train_X, train_Y = SMOTE().fit_resample(train_X, train_Y)
+    train_X, train_Y = SMOTE(random_state=0).fit_resample(train_X, train_Y)
 
     return train_X, train_Y, test_X, test_Y
