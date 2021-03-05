@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 # functions to generate balanced dataset from raw data
 
+from math import floor
+from random import randint
+
 import numpy as np
 import pandas as pd
 from imblearn.over_sampling import SMOTE
@@ -8,6 +11,9 @@ from sklearn.model_selection import train_test_split
 
 from const import RAW_DATA_FILEPATH, TEST_DATA_FILEPATH, TRAIN_DATA_FILEPATH
 from data_validation import validate_raw_data
+
+# flag to avoid generating test and train datasets more than once
+is_dataset_ready = False
 
 
 def get_one_sample():
@@ -17,13 +23,36 @@ def get_one_sample():
     return sample, sample_class
 
 
+def get_random_sample():
+    test_X, test_Y = get_test_data()
+    num_rows = len(test_X.index)
+    random_index = randint(0, num_rows - 1)
+    sample = test_X.head(random_index)
+    sample_class = int(test_Y.head(random_index).values[0])
+    return sample, sample_class
+
+
 def get_training_data():
-    train_X, train_Y, _, _ = generate_dataset()
+    if is_dataset_ready is False:
+        train_df, _ = generate_test_and_train_sets()
+    else:
+        # load from csv
+        train_df = pd.read_csv(TRAIN_DATA_FILEPATH)
+    # separate on X and Y
+    train_X = train_df.drop(columns=["Class"])
+    train_Y = train_df["Class"]
     return train_X, train_Y
 
 
 def get_test_data():
-    _, _, test_X, test_Y = generate_dataset()
+    if is_dataset_ready is False:
+        _, test_df = generate_test_and_train_sets()
+    else:
+        # load from csv
+        test_df = pd.read_csv(TEST_DATA_FILEPATH)
+    # separate on X and Y
+    test_X = test_df.drop(columns=["Class"])
+    test_Y = test_df["Class"]
     return test_X, test_Y
 
 
@@ -61,7 +90,7 @@ def continuous_multivar_stratified_split(df, test_size=0.3):
     return df_train, df_test
 
 
-def generate_dataset():
+def get_test_and_train_sets():
     """
         This function returns the X and Y of the train and test datasets.
         For this, it uses undersampling and oversampling in order to balance
@@ -91,25 +120,21 @@ def generate_dataset():
     positive_rows = raw_data.loc[raw_data["Class"] == 1].copy()
     negative_rows = raw_data.loc[raw_data["Class"] == 0].copy()
 
-    # normalize time and amount columns
-    # positive_rows['Time'] = normalize_col(positive_rows['Time'])
-    # positive_rows['Amount'] = normalize_col(positive_rows['Amount'])
-    # negative_rows['Time'] = normalize_col(negative_rows['Time'])
-    # negative_rows['Amount'] = normalize_col(negative_rows['Amount'])
-
     # train/test split
     pos_train, pos_test = continuous_multivar_stratified_split(positive_rows)
 
     # setup positive and negative sample quantities
+    num_pos_rows = len(positive_rows.index)
+    num_neg_rows = len(negative_rows.index)
+    class_imbalance = num_neg_rows / num_pos_rows
     num_pos_train_samples = pos_train.shape[0]
     num_pos_test_samples = pos_test.shape[0]
     num_neg_train_samples = num_pos_train_samples * 2
-    num_neg_test_samples = (
-        num_pos_test_samples
-    )  # TODO: *500 to make test set unbalanced
+    num_neg_test_samples = floor(num_pos_test_samples * class_imbalance)
     num_neg_samples = num_neg_train_samples + num_neg_test_samples
 
     # undersample negative samples
+    # (tries to keep in the test set the same class imbalance found in the raw data)
     neg_samples = negative_rows.sample(n=num_neg_samples, random_state=0)
     neg_train, neg_test = continuous_multivar_stratified_split(
         neg_samples, test_size=num_pos_test_samples
@@ -125,7 +150,7 @@ def generate_dataset():
     test_X = test_samples.drop(columns=["Class"])
     test_Y = test_samples["Class"]
 
-    # apply SMOTE on training samples
+    # apply SMOTE on training samples (oversampling)
     # (solve class imbalance by creating new samples base on interpolations)
     train_X, train_Y = SMOTE(random_state=0).fit_resample(train_X, train_Y)
 
@@ -137,13 +162,19 @@ def generate_test_and_train_sets():
         generates train and test sets from the raw data csv
         and saves them in separate csv files
     """
+    global is_dataset_ready
+
     # get train and test data
-    train_X, train_Y, test_X, test_Y = generate_dataset()
-    train = train_X
-    train["Class"] = train_Y
-    test = test_X
-    test["Class"] = test_Y
+    train_X, train_Y, test_X, test_Y = get_test_and_train_sets()
+    train_df = train_X
+    train_df["Class"] = train_Y
+    test_df = test_X
+    test_df["Class"] = test_Y
 
     # save to csv
-    train.to_csv(TRAIN_DATA_FILEPATH, index=False)
-    test.to_csv(TEST_DATA_FILEPATH, index=False)
+    train_df.to_csv(TRAIN_DATA_FILEPATH, index=False)
+    test_df.to_csv(TEST_DATA_FILEPATH, index=False)
+
+    is_dataset_ready = True
+
+    return train_df, test_df

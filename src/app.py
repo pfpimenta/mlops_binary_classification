@@ -7,7 +7,7 @@ from json import loads
 import pandas as pd
 from flask import Flask, jsonify, request
 
-from classify import classify_batch, classify_sample, classify_test_sample
+from classify import classify_batch, classify_random_sample, classify_sample
 from flask_logs import LogSetup
 from healthcheck import check_health
 from train import train
@@ -36,7 +36,6 @@ def endpoint_healthcheck():
 
 
 # endpoint to train the model
-# TODO
 @app.route("/train", methods=["GET"])
 def endpoint_train():
     app.logger.info("Training the model...")
@@ -46,13 +45,15 @@ def endpoint_train():
         f"Model has been trained successfully. Score on the test data: {roc_auc_score}"
     )
     app.logger.info(message)
+    metrics_message = f"All calculated model metrics on the test data: {metrics}"
+    app.logger.info(metrics_message)
     return jsonify(message=message, metrics=metrics), 200
 
 
 # endpoint to classify a test sample (for debug purposes)
-@app.route("/classify_test_sample", methods=["GET"])
-def endpoint_classify_test_sample():
-    predicted_class, expected_class = classify_test_sample()
+@app.route("/classify_random_sample", methods=["GET"])
+def endpoint_classify_random_sample():
+    predicted_class, expected_class = classify_random_sample()
     app.logger.info("Predicted class: %s", str(predicted_class))
     app.logger.info("Expected class: %s", str(expected_class))
     return (
@@ -62,7 +63,7 @@ def endpoint_classify_test_sample():
 
 
 # endpoint to classify a single sample
-@app.route("/classify_sample/", methods=["GET"])
+@app.route("/classify_sample", methods=["GET"])
 def endpoint_classify_sample():
     sample_json = request.args.get("sample")
     app.logger.info("Classifying sample: %s", sample_json)

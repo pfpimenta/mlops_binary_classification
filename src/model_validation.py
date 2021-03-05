@@ -30,12 +30,13 @@ def get_model_metrics(model):
     return metrics
 
 
-def validate_model(model):
+def validate_model(model, metrics=None):
     """
         returns True if the model is valid
         and False otherwise
     """
-    metrics = get_model_metrics(model)
+    if metrics is None:
+        metrics = get_model_metrics(model)
     # criteria for validating the model:
     acceptable_f1 = metrics["f1"] < MINIMUM_SCORE_THRESHOLD
     acceptable_pr_auc = metrics["pr_auc"] < MINIMUM_SCORE_THRESHOLD
