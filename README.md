@@ -1,5 +1,5 @@
 # mlops_binary_classification
-Repositorio para um desafio de desenvolvimento MLOps para uma oportunidade de emprego.
+Repositorio para um desafio de desenvolvimento MLOps.
 
 O desafio tem como base um problema do Kaggle:
 https://www.kaggle.com/mlg-ulb/creditcardfraud
