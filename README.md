@@ -12,6 +12,9 @@ O projeto deve incluir:
 - Geração de features
 
 
+## How to build the docker container:
+`sh docker_build.sh`
+
 ## How to use the API using linux terminal:
 - Call Hello-World endpoint:
 `curl -X GET http://0.0.0.0:9200/`
@@ -36,14 +39,14 @@ For endpoints classify_sample and classify_batch enpoints, you need to send the 
 ## TODOs
 - Some kind of feature generation/engineering.
 - Save metadata (metrics, training time, data used, etc) when a model is trained and saved.
-- Improved model persistance: have the option to .
+- Improved model persistance: have the option to choose between models and/or upload trained models.
 - Improve model validation.
 - Improve data validation.
 - Unit and integration tests.
 
 ## Main project features
 - API with 6 endpoints
-    - /: hello world checkpoint (may be useful to test if API is up).
+    - /: hello world endpoint (may be useful to test if API is up).
     - /healthcheck: returns current system health information.
     - /train: trains a binary classifier model and saves its state in the API for future use.
     - /classify_random_sample: creates a sample with random features, classifies it using the most recent trained model, and then returns the result.
