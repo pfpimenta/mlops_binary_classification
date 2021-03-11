@@ -13,7 +13,9 @@ O projeto deve incluir:
 
 
 ## How to build the docker container:
-`sh docker_build.sh`
+```sh
+sh docker_build.sh
+```
 
 ## How to use the API using linux terminal:
 - Call Hello-World endpoint:
@@ -35,6 +37,16 @@ O projeto deve incluir:
 `curl -X GET http://0.0.0.0:9200/classify_batch?batch=<batch>`
 
 For endpoints classify_sample and classify_batch enpoints, you need to send the sample or batch in a JSON format as a query string parameter.
+
+## How to run the automated tests:
+- Firslty, install the tests dependencies (you might want to do it in a virtual environment):
+```sh
+pip3 install tests/requirements.txt
+```
+- Then, run the tests shell script:
+```sh
+sh run_tests.sh
+```
 
 ## TODOs
 - Some kind of feature generation/engineering.
